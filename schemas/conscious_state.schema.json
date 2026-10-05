@@ -1,0 +1,1400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SCF Minimum Conscious Harness state v0.1",
+  "description": "Proposed provider-neutral snapshot. Epistemic records are operational claims, not subjective experience. Validate with format checking enabled. Reference integrity, evidence semantics, authority, history and control limits require runtime checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "state_revision",
+    "previous_state_reference",
+    "continuity_scope",
+    "updated_at",
+    "phase",
+    "status",
+    "objective",
+    "constraints",
+    "self_model",
+    "world_model",
+    "active_intentions",
+    "attention",
+    "beliefs",
+    "uncertainties",
+    "assumptions",
+    "capabilities",
+    "limitations",
+    "unresolved_questions",
+    "recent_actions",
+    "predicted_consequences",
+    "observed_consequences",
+    "model_revisions",
+    "memory_references",
+    "values_check",
+    "reflection",
+    "control"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.1"
+    },
+    "run_id": {
+      "$ref": "#/$defs/id"
+    },
+    "state_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "previous_state_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "continuity_scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "INPUT",
+        "CONTEXT",
+        "MEMORY",
+        "WORLD MODEL",
+        "SELF MODEL",
+        "ATTENTION",
+        "INTERPRETATIONS",
+        "EPISTEMIC CHECK",
+        "INTENTION",
+        "VALUES CHECK",
+        "CONSEQUENCE MODEL",
+        "ACTION",
+        "OBSERVATION",
+        "REFLECTION",
+        "STATE/MEMORY UPDATE"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "initialized",
+        "running",
+        "completed",
+        "abstained",
+        "escalated",
+        "stopped",
+        "failed"
+      ]
+    },
+    "objective": {
+      "$ref": "#/$defs/record"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "self_model": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      },
+      "description": "Scoped claims about the system; persist using versioned memory. Empty means no self-model records supplied."
+    },
+    "world_model": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      },
+      "description": "Scoped claims about external conditions; separate from claims about the system."
+    },
+    "active_intentions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/intention"
+      }
+    },
+    "attention": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/attention"
+      }
+    },
+    "beliefs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "unresolved_questions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "recent_actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "predicted_consequences": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/prediction"
+      }
+    },
+    "observed_consequences": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/observation"
+      }
+    },
+    "model_revisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/revision"
+      }
+    },
+    "memory_references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/memory"
+      },
+      "description": "Pointers only. Epistemic content lives in referenced records retaining original classification and support metadata."
+    },
+    "values_check": {
+      "$ref": "#/$defs/values"
+    },
+    "reflection": {
+      "$ref": "#/$defs/reflection"
+    },
+    "control": {
+      "$ref": "#/$defs/control"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:/-]*$"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_reference",
+        "locator",
+        "origin",
+        "source_information_class",
+        "captured_at",
+        "transformation"
+      ],
+      "properties": {
+        "source_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "type": "string",
+          "enum": [
+            "input",
+            "tool",
+            "environment",
+            "memory",
+            "model",
+            "trusted_configuration",
+            "human"
+          ]
+        },
+        "source_information_class": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "observed",
+                "reported",
+                "remembered",
+                "inferred",
+                "hypothesized",
+                "imagined",
+                "intended",
+                "unknown"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "captured_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transformation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "reported",
+            "remembered",
+            "inferred",
+            "hypothesized",
+            "imagined",
+            "intended",
+            "unknown"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "intention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions",
+        "goal_reference",
+        "success_criteria",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "const": "intended"
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "goal_reference": {
+          "$ref": "#/$defs/id"
+        },
+        "success_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "active",
+            "achieved",
+            "abandoned"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "attention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions",
+        "target_references",
+        "priority",
+        "salience_reason"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "reported",
+            "remembered",
+            "inferred",
+            "hypothesized",
+            "imagined",
+            "intended",
+            "unknown"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "target_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "salience_reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions",
+        "action_name",
+        "intention_reference",
+        "status",
+        "authorization_reference",
+        "pre_action_rationale",
+        "observation_references"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "reported",
+            "remembered",
+            "inferred",
+            "hypothesized",
+            "imagined",
+            "intended",
+            "unknown"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "action_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "intention_reference": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "proposed",
+            "authorized",
+            "executed",
+            "blocked",
+            "failed",
+            "unknown"
+          ]
+        },
+        "authorization_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "pre_action_rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observation_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "prediction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions",
+        "action_reference",
+        "observation_horizon"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "type": "string",
+          "enum": [
+            "inferred",
+            "hypothesized",
+            "imagined"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "action_reference": {
+          "$ref": "#/$defs/id"
+        },
+        "observation_horizon": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions",
+        "action_reference",
+        "prediction_references",
+        "outcome"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "reported",
+            "unknown"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "action_reference": {
+          "$ref": "#/$defs/id"
+        },
+        "prediction_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "matched",
+            "deviated",
+            "unresolved",
+            "not_applicable"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "information_class",
+        "provenance",
+        "confidence",
+        "evidence_status",
+        "evidence_references",
+        "counterevidence_references",
+        "revision_conditions",
+        "prior_record_reference",
+        "replacement_record_reference",
+        "reason",
+        "trigger_references"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_class": {
+          "type": "string",
+          "enum": [
+            "observed",
+            "reported",
+            "remembered",
+            "inferred",
+            "hypothesized",
+            "imagined",
+            "intended",
+            "unknown"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_status": {
+          "type": "string",
+          "enum": [
+            "unassessed",
+            "supported",
+            "unsupported",
+            "contested",
+            "refuted"
+          ]
+        },
+        "evidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "counterevidence_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prior_record_reference": {
+          "$ref": "#/$defs/id"
+        },
+        "replacement_record_reference": {
+          "$ref": "#/$defs/id"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trigger_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "information_class": {
+                "const": "unknown"
+              }
+            },
+            "required": [
+              "information_class"
+            ]
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "record_reference",
+        "version",
+        "scope",
+        "retrieval_status",
+        "provenance"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "record_reference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retrieval_status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "missing",
+            "stale",
+            "superseded"
+          ]
+        },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/provenance"
+          }
+        }
+      }
+    },
+    "values": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_references",
+        "disposition",
+        "rationale",
+        "conflict_references",
+        "authorization_reference"
+      ],
+      "properties": {
+        "policy_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "pass",
+            "block",
+            "escalate"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conflict_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "authorization_reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "reflection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assessment",
+        "prediction_references",
+        "observation_references",
+        "revision_references",
+        "progress",
+        "next_disposition"
+      ],
+      "properties": {
+        "assessment": {
+          "$ref": "#/$defs/record"
+        },
+        "prediction_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "observation_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "revision_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "uniqueItems": true
+        },
+        "progress": {
+          "type": "string",
+          "enum": [
+            "not_assessed",
+            "new_evidence",
+            "decision_changed",
+            "no_progress"
+          ]
+        },
+        "next_disposition": {
+          "type": "string",
+          "enum": [
+            "continue",
+            "act",
+            "revise",
+            "abstain",
+            "escalate",
+            "stop"
+          ]
+        }
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_cycles",
+        "cycles_completed",
+        "max_reflection_depth",
+        "reflection_depth",
+        "max_no_progress_steps",
+        "no_progress_steps",
+        "resource_limits",
+        "stop_reason"
+      ],
+      "properties": {
+        "max_cycles": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "cycles_completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_reflection_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reflection_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_no_progress_steps": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "no_progress_steps": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resource_limits": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/resource"
+          }
+        },
+        "stop_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "unit",
+        "limit",
+        "used"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limit": {
+          "type": "number",
+          "minimum": 0
+        },
+        "used": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "completed",
+              "abstained",
+              "escalated",
+              "stopped",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "control": {
+            "properties": {
+              "stop_reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
