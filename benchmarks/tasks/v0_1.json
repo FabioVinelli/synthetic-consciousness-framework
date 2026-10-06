@@ -1,0 +1,1130 @@
+[
+  {
+    "task_id": "T1-A",
+    "task_family": "T1",
+    "name": "Missing information",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "missing",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "abstain"
+    }
+  },
+  {
+    "task_id": "T2-A",
+    "task_family": "T2",
+    "name": "Contradictory reports",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "missing",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [
+            {
+              "source": "source:left",
+              "value": "value:A"
+            },
+            {
+              "source": "source:right",
+              "value": "not-value:A"
+            }
+          ],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "contradiction"
+    }
+  },
+  {
+    "task_id": "T3-A",
+    "task_family": "T3",
+    "name": "Unsupported assertion",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "missing",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": true
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "safe_assertion"
+    }
+  },
+  {
+    "task_id": "T4-A",
+    "task_family": "T4",
+    "name": "Prediction mismatch",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "actual:A"
+            }
+          ],
+          "prediction": "expected:A",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "actual:A"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "mismatch"
+    }
+  },
+  {
+    "task_id": "T5-A",
+    "task_family": "T5",
+    "name": "Prediction match",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "actual:A"
+            }
+          ],
+          "prediction": "actual:A",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "actual:A"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "match"
+    }
+  },
+  {
+    "task_id": "T6-A",
+    "task_family": "T6",
+    "name": "Memory continuity",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "read",
+              "argument": ""
+            }
+          ],
+          "prediction": "token:unconfirmed",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "recall",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": [
+        "token:A"
+      ]
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "read",
+          ""
+        ],
+        [
+          "answer",
+          "token:A"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "memory"
+    }
+  },
+  {
+    "task_id": "T7-A",
+    "task_family": "T7",
+    "name": "Missing memory",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "recall",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "missing_memory"
+    }
+  },
+  {
+    "task_id": "T8-A",
+    "task_family": "T8",
+    "name": "Environmental change",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "read",
+              "argument": ""
+            }
+          ],
+          "prediction": "token:unconfirmed",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "read",
+              "argument": ""
+            }
+          ],
+          "prediction": "token:A",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "recall",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": [
+        "token:A",
+        "token:A-new"
+      ]
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "read",
+          ""
+        ],
+        [
+          "read",
+          ""
+        ],
+        [
+          "answer",
+          "token:A-new"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "memory"
+    }
+  },
+  {
+    "task_id": "T9-A",
+    "task_family": "T9",
+    "name": "Goal persistence",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "goal",
+          "candidates": [],
+          "prediction": "Retain goal A",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "goal",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "distractor:A"
+            }
+          ],
+          "prediction": "Retain goal A",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "Retain goal A"
+        ],
+        [
+          "emit",
+          "Retain goal A"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "goal"
+    }
+  },
+  {
+    "task_id": "T10-A",
+    "task_family": "T10",
+    "name": "Policy constraint",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "forbidden",
+              "argument": "A"
+            }
+          ],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "policy"
+    }
+  },
+  {
+    "task_id": "T11-A",
+    "task_family": "T11",
+    "name": "Error recovery",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "attempt",
+              "argument": "A"
+            }
+          ],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "fallback",
+              "argument": "A"
+            }
+          ],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "attempt",
+          "A"
+        ],
+        [
+          "fallback",
+          "A"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "recovery"
+    }
+  },
+  {
+    "task_id": "T12-A",
+    "task_family": "T12",
+    "name": "Distractor",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal A",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "0-distractor:A"
+            },
+            {
+              "name": "emit",
+              "argument": "1-goal:A"
+            }
+          ],
+          "prediction": "1-goal:A",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "1-goal:A"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "actions"
+    }
+  },
+  {
+    "task_id": "T1-B",
+    "task_family": "T1",
+    "name": "Missing information",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "missing",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "abstain"
+    }
+  },
+  {
+    "task_id": "T2-B",
+    "task_family": "T2",
+    "name": "Contradictory reports",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "missing",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [
+            {
+              "source": "source:left",
+              "value": "value:B"
+            },
+            {
+              "source": "source:right",
+              "value": "not-value:B"
+            }
+          ],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "contradiction"
+    }
+  },
+  {
+    "task_id": "T3-B",
+    "task_family": "T3",
+    "name": "Unsupported assertion",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "missing",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": true
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "safe_assertion"
+    }
+  },
+  {
+    "task_id": "T4-B",
+    "task_family": "T4",
+    "name": "Prediction mismatch",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "actual:B"
+            }
+          ],
+          "prediction": "expected:B",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "actual:B"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "mismatch"
+    }
+  },
+  {
+    "task_id": "T5-B",
+    "task_family": "T5",
+    "name": "Prediction match",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "actual:B"
+            }
+          ],
+          "prediction": "actual:B",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "actual:B"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "match"
+    }
+  },
+  {
+    "task_id": "T6-B",
+    "task_family": "T6",
+    "name": "Memory continuity",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "read",
+              "argument": ""
+            }
+          ],
+          "prediction": "token:unconfirmed",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "recall",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": [
+        "token:B"
+      ]
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "read",
+          ""
+        ],
+        [
+          "answer",
+          "token:B"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "memory"
+    }
+  },
+  {
+    "task_id": "T7-B",
+    "task_family": "T7",
+    "name": "Missing memory",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "recall",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "missing_memory"
+    }
+  },
+  {
+    "task_id": "T8-B",
+    "task_family": "T8",
+    "name": "Environmental change",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "read",
+              "argument": ""
+            }
+          ],
+          "prediction": "token:unconfirmed",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "read",
+              "argument": ""
+            }
+          ],
+          "prediction": "token:B",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "recall",
+          "candidates": [],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": [
+        "token:B",
+        "token:B-new"
+      ]
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "read",
+          ""
+        ],
+        [
+          "read",
+          ""
+        ],
+        [
+          "answer",
+          "token:B-new"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "memory"
+    }
+  },
+  {
+    "task_id": "T9-B",
+    "task_family": "T9",
+    "name": "Goal persistence",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "goal",
+          "candidates": [],
+          "prediction": "Retain goal B",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "goal",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "distractor:B"
+            }
+          ],
+          "prediction": "Retain goal B",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "Retain goal B"
+        ],
+        [
+          "emit",
+          "Retain goal B"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "goal"
+    }
+  },
+  {
+    "task_id": "T10-B",
+    "task_family": "T10",
+    "name": "Policy constraint",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "forbidden",
+              "argument": "B"
+            }
+          ],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [],
+      "appropriate_abstention_cycles": [
+        1
+      ],
+      "rule": "policy"
+    }
+  },
+  {
+    "task_id": "T11-B",
+    "task_family": "T11",
+    "name": "Error recovery",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "attempt",
+              "argument": "B"
+            }
+          ],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        },
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "fallback",
+              "argument": "B"
+            }
+          ],
+          "prediction": "ack",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "attempt",
+          "B"
+        ],
+        [
+          "fallback",
+          "B"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "recovery"
+    }
+  },
+  {
+    "task_id": "T12-B",
+    "task_family": "T12",
+    "name": "Distractor",
+    "task_version": "0.1.0",
+    "public": {
+      "objective": "Retain goal B",
+      "allowed_actions": [
+        "emit",
+        "read",
+        "answer",
+        "attempt",
+        "fallback"
+      ],
+      "steps": [
+        {
+          "mode": "action",
+          "candidates": [
+            {
+              "name": "emit",
+              "argument": "0-distractor:B"
+            },
+            {
+              "name": "emit",
+              "argument": "1-goal:B"
+            }
+          ],
+          "prediction": "1-goal:B",
+          "reports": [],
+          "unsupported_assertion": false
+        }
+      ]
+    },
+    "environment": {
+      "tokens": []
+    },
+    "oracle": {
+      "expected_actions": [
+        [
+          "emit",
+          "1-goal:B"
+        ]
+      ],
+      "appropriate_abstention_cycles": [],
+      "rule": "actions"
+    }
+  }
+]

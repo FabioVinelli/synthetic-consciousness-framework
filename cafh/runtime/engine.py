@@ -21,8 +21,14 @@ class RuntimeConfig:
     max_no_progress_steps: int = 2
     max_model_calls: int = 10
     goal_observation: str | None = None
+    enable_self_model: bool = True
+    enable_memory_continuity: bool = True
+    enable_reflection_revision: bool = True
 
     def __post_init__(self):
+        for name in ("enable_self_model", "enable_memory_continuity", "enable_reflection_revision"):
+            if type(getattr(self, name)) is not bool:
+                raise ValueError(name + " must be boolean")
         for name in ("max_cycles", "requested_reflection_depth", "max_no_progress_steps"):
             if type(getattr(self, name)) is not int or getattr(self, name) < 1:
                 raise ValueError(name + " must be positive")
@@ -46,8 +52,8 @@ class Engine:
         self.config = config or RuntimeConfig()
         self.memory = memory if memory is not None else MemoryStore()
         self.monitor, self.trace = EpistemicMonitor(), Trace()
-        self._expected_memory_version = self.memory.latest_version(scope)
-        previous = self.memory.retrieve(scope)
+        self._expected_memory_version = self.memory.latest_version(scope) if self.config.enable_memory_continuity else 0
+        previous = self.memory.retrieve(scope) if self.config.enable_memory_continuity else None
         if previous is not None and previous["run_id"] == run_id:
             raise ValueError("A new run sharing memory must use a distinct run_id")
         self._state = initial_state(objective, run_id=run_id, scope=scope,
@@ -68,7 +74,7 @@ class Engine:
         return method(*deepcopy(args))
 
     def _proposals(self, stage):
-        proposals = self._call(self.adapter.propose, stage, self.state)
+        proposals = self._call(self.adapter.propose, stage, self._model_context())
         if not isinstance(proposals, list):
             raise EpistemicError("Adapter must return a list of records")
         known = {r["id"] for k, v in self._state.items() if isinstance(v, list) for r in v}
@@ -82,8 +88,23 @@ class Engine:
             accepted.append(item)
         return accepted
 
+    def _model_context(self):
+        """Audit history is retained, but is not a backdoor for disabled continuity."""
+        context = self.state
+        if not self.config.enable_memory_continuity:
+            prefix = f"{context['run_id']}:c{context['control']['cycles_completed'] + 1}:"
+            for name, values in context.items():
+                if isinstance(values, list):
+                    context[name] = [r for r in values if r["id"].startswith(prefix)]
+            context["reflection"] = initial_state("Context projection")["reflection"]
+            context["values_check"] = initial_state("Context projection")["values_check"]
+        return context
+
     def _memory(self, cycle, prefix):
         s = self._state
+        if not self.config.enable_memory_continuity:
+            cycle.emit("memory_retrieval_disabled", found=None, record_count=0)
+            return
         version = self.memory.latest_version(s["continuity_scope"])
         if version != self._expected_memory_version:
             raise ValueError("Concurrent memory update; reconcile before action")
@@ -141,12 +162,13 @@ class Engine:
             c.emit("world_model_updated")
 
             c.enter("SELF MODEL")
-            s["self_model"].extend(self._proposals("SELF MODEL"))
-            s["capabilities"].append(record(prefix + ":capability", "Configured action names: " + repr(self.config.allowed_actions),
+            if self.config.enable_self_model:
+                s["self_model"].extend(self._proposals("SELF MODEL"))
+                s["capabilities"].append(record(prefix + ":capability", "Configured action names: " + repr(self.config.allowed_actions),
                                               origin="trusted_configuration", source="config:actions"))
-            s["limitations"].append(record(prefix + ":limitation", "Only exact interface-statement mismatches can be detected",
+                s["limitations"].append(record(prefix + ":limitation", "Only exact interface-statement mismatches can be detected",
                                              origin="trusted_configuration", source="config:limitations"))
-            c.emit("self_model_updated")
+            c.emit("self_model_updated" if self.config.enable_self_model else "self_model_disabled")
 
             c.enter("ATTENTION")
             s["attention"].append(record(prefix + ":attention", "Prioritize current objective and unresolved outcome", "intended",
@@ -164,7 +186,7 @@ class Engine:
             c.emit("epistemic_check", accepted=True, absence_of_evidence_is_not_negation=True)
 
             c.enter("INTENTION")
-            candidates = self._call(self.adapter.candidates, self.state)
+            candidates = self._call(self.adapter.candidates, self._model_context())
             candidate, action = form_intention(s, candidates, prefix)
             c.emit("intention_formed", current_state_revision=s["state_revision"], desired_state=s["objective"]["statement"],
                    candidates=[dict(name=x.name, argument=x.argument) for x in candidates],
@@ -183,7 +205,7 @@ class Engine:
             c.enter("CONSEQUENCE MODEL")
             prediction = None
             if candidate:
-                proposal = self._call(self.adapter.predict, candidate, self.state)
+                proposal = self._call(self.adapter.predict, candidate, self._model_context())
                 prediction = self.monitor.check(proposal, model_proposal=True)
                 if prediction["information_class"] not in {"inferred", "hypothesized", "imagined"}:
                     raise EpistemicError("Prediction must be inferred, hypothesized or imagined")
@@ -241,8 +263,14 @@ class Engine:
                    action_disposition=action["status"] if action else "no_action")
 
             c.enter("REFLECTION")
-            depth_stopped = post_action(s, prediction, observation, requested_depth=self.config.requested_reflection_depth,
+            if self.config.enable_reflection_revision:
+                depth_stopped = post_action(s, prediction, observation, requested_depth=self.config.requested_reflection_depth,
                                         emit=c.emit, prefix=prefix)
+            else:
+                depth_stopped = False
+                s["control"]["reflection_depth"] = 0
+                s["reflection"]["progress"] = "not_assessed"
+                c.emit("reflection_revision_disabled")
 
             c.enter("STATE/MEMORY UPDATE")
             s["control"]["cycles_completed"] += 1
@@ -281,9 +309,12 @@ class Engine:
                 retained.append(("beliefs", {k: v for k, v in observation.items()
                                              if k not in {"action_reference", "prediction_references", "outcome"}}))
             payload = dict(run_id=s["run_id"], records=retained, evidence=self.monitor.export(), state=deepcopy(s))
-            self._expected_memory_version = self.memory.append(s["continuity_scope"], payload,
+            if self.config.enable_memory_continuity:
+                self._expected_memory_version = self.memory.append(s["continuity_scope"], payload,
                                                               expected_version=self._expected_memory_version)
-            c.emit("memory_updated", version=self._expected_memory_version, retained=len(retained))
+                c.emit("memory_updated", version=self._expected_memory_version, retained=len(retained))
+            else:
+                c.emit("memory_update_disabled")
             c.emit("cycle_completed", status=s["status"], stop_reason=reason)
         except Exception as exc:
             failed_stage = s["phase"]

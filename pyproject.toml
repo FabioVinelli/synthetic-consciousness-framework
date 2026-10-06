@@ -16,7 +16,10 @@ test = ["pytest>=8,<10"]
 testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
-include = ["cafh*"]
+include = ["cafh*", "benchmarks*"]
 
 [tool.setuptools.data-files]
 "share/cafh" = ["schemas/conscious_state.schema.json"]
+
+[tool.setuptools.package-data]
+"benchmarks.tasks" = ["v0_1.json"]

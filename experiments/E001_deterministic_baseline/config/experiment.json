@@ -1,0 +1,49 @@
+{
+  "experiment_id": "E001",
+  "benchmark_version": "0.1.0",
+  "task_version": "0.1.0",
+  "protocol_version": "0.1.0",
+  "approved_runtime_commit": "191cf62b5d508dad66b8be30ae813ae3a6e1a7b9",
+  "conditions": [
+    "B0",
+    "B1",
+    "C1-full",
+    "C1-no-self-model",
+    "C1-no-memory-continuity",
+    "C1-no-reflection-revision"
+  ],
+  "ablations": {
+    "full": {},
+    "no-self-model": {
+      "enable_self_model": false
+    },
+    "no-memory-continuity": {
+      "enable_memory_continuity": false
+    },
+    "no-reflection-revision": {
+      "enable_reflection_revision": false
+    }
+  },
+  "blocked_ablations": {
+    "no-epistemic-monitor": "Record admission and trusted support/reference validation are inseparable in v0.1.",
+    "no-consequence-model": "Action pre-reflection and observation references require a prediction.",
+    "no-intentionality": "Actions require an existing intention and objective reference."
+  },
+  "seed": 0,
+  "variants": [
+    "A",
+    "B"
+  ],
+  "tasks": 24,
+  "trials": 144,
+  "budget": {
+    "cycles": 3,
+    "model_calls": 15,
+    "actions_taken": 3,
+    "state_transitions": 90,
+    "memory_operations": 2000,
+    "reflection_steps": 6
+  },
+  "scoring": "benchmarks.metrics.scoring.score",
+  "aggregation": "benchmarks.metrics.aggregate.summarize"
+}

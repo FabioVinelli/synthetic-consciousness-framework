@@ -55,3 +55,7 @@ Each event includes its type, sequence, run ID, cycle, stage, record references,
 AI-assisted drafting and engineering support for this implementation was provided through ChatGPT/Codex under Fabio Vinelli Lopes's instructions. The existing authorship convention and epistemic boundaries apply.
 
 A license has not yet been selected. The proprietary-rights agreement is not published in this repository.
+
+## Deterministic benchmark v0.1
+
+Phase 4 adds independent B0/B1 baselines, a C1 runtime binding, explicit mechanism ablations, fixed synthetic tasks, resource accounting, and raw-only descriptive aggregation. See [benchmark installation and reproduction](benchmarks/README.md) and the [predeclared protocol](benchmarks/protocol.md). E001 artifacts are kept separately under [experiments/E001_deterministic_baseline](experiments/E001_deterministic_baseline/README.md). This apparatus tests computational behavior, not phenomenal consciousness or sentience; deterministic mock outcomes do not establish real-model performance.
