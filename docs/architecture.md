@@ -1,6 +1,6 @@
 # CAFH architecture — Minimum Conscious Harness v0.1
 
-Status: interface and state-flow specification. CAFH is the future reference implementation of SCF; this increment implements no provider-specific or generic runtime.
+Status: Phase 2 interface and state-flow specification, now accompanied by the Phase 3 deterministic reference runtime described below. The scientific boundaries and contracts remain unchanged; no provider-specific runtime is included.
 
 ## Separation of responsibilities
 
@@ -74,6 +74,38 @@ Reference fields name IDs in the snapshot or a resolvable versioned store. Prove
 Malformed outputs receive bounded correction or validation failure. Missing evidence leads to revision, abstention, or escalation. Tool errors remain observations of failure. A timeout with unknown external outcome requires reconciliation before retry; future action adapters must define idempotency for side effects.
 
 The controller enforces cycle, recursion, no-progress, and resource limits and records a terminal reason. State validity is distinct from runtime conformance, empirical improvement, and consciousness.
+
+## Reference runtime v0.1 — execution and limits
+
+Install and run from the checkout as described in [README](../README.md). The example is [minimal_agent.py](../examples/minimal_agent.py); tests use pytest with no provider credentials.
+
+| Module | Implemented responsibility |
+| --- | --- |
+| [runtime/engine.py](../cafh/runtime/engine.py) | Explicit 15-stage orchestration; trusted allowlist; dispatch and stop decisions |
+| [runtime/cycle.py](../cafh/runtime/cycle.py) | Stage-order enforcement and structured, copy-isolated event snapshots |
+| [runtime/state.py](../cafh/runtime/state.py) | Initialization, Draft 2020-12 validation with format checking, duplicate-ID/control checks |
+| [adapters/base.py](../cafh/adapters/base.py) | Abstract ModelAdapter plus separate trusted ActionInterface |
+| [adapters/mock.py](../cafh/adapters/mock.py) | Deterministic proposals and local synthetic echo environment |
+| [epistemics/monitor.py](../cafh/epistemics/monitor.py) | Evidence admission, typed reference checks, revision graph checks, memory validation |
+| [intentionality/manager.py](../cafh/intentionality/manager.py) | Objective-linked intention and observable lexicographic candidate selection |
+| [reflection/engine.py](../cafh/reflection/engine.py) | Separate pre/post hooks; exact mismatch detection and explicit revision |
+| [memory/store.py](../cafh/memory/store.py) | Scoped, copy-isolated versions with expected-version checks |
+
+Use `Engine(adapter, environment, objective=..., config=RuntimeConfig(...))` and call `run_cycle(input_text)`. Action permissions default to an empty allowlist. Each normal cycle makes separate model calls for world modeling, self modeling, interpretation, candidate generation, and prediction. Attention, values checks, reference validation, reflection, and state updates remain inspectable controller operations.
+
+`engine.state` and `engine.trace.events` return independent copies. Events carry `event`, `sequence`, `run_id`, `cycle`, `stage`, `record_references`, `data`, and `state`. A failed cycle records its failed stage and stops; rejected proposals do not become accepted state. State revisions use deterministic logical timestamps anchored at 2000-01-01, not actual observation times. Provenance timestamps remain null when unavailable.
+
+`validate_state` checks the unchanged schema, formats, duplicate IDs, and numerical limits. `engine.monitor.audit(state, engine.memory)` additionally checks evidence, intention/action/prediction/observation links, reflection and revision references, acyclic revision links, trusted authorization references, and memory scope/version/content. A memory locator is resolved through the supplied store; absent versions remain missing. External provenance locators are descriptions, not network-fetched verification.
+
+The model receives copies and can propose records but cannot register evidence or authorize actions. Observations come only through the separately supplied trusted action interface. Exact, scoped interface statements can be supported by matching registered evidence. Unverified reports, hypotheses, and unknowns are retained as such; unknown memory records stay unknown. This is conservative validation, not a general entailment or truth verifier. Loaded Python adapters/stores are trusted host code, not sandboxed plugins.
+
+Memory is in-process only. Original records and prior snapshots remain available. At each successful update, the store retains original self-model entries, the latest available or unknown consequence record, evidence records, and a snapshot taken at the write boundary. Later event snapshots also record the successful write and cycle completion. Reuse across Engine instances requires a distinct run ID and the same explicit scope; stale-version writes stop rather than silently merge.
+
+Configured limits cover cycles, model-call count, reflection depth, and consecutive cycles without a new observed statement or explicit correction. At most one action is dispatched per cycle. Extra reflection without new evidence stops. No adapter retries are automatic; interface failures retain an unknown outcome. These bounds do not implement preemption of arbitrary blocking host code or token/time accounting for future real models.
+
+Selection currently sorts action name and argument. The values interface currently enforces an externally supplied action allowlist; it does not interpret unrestricted ethical prose. The trusted optional `goal_observation` condition can complete a run only on an exact observed statement. Pre-action reflection checks authorization and a recorded prediction; post-action conflict detection compares exact interface statements. It does not infer semantic contradictions in arbitrary natural language.
+
+The self-model and attention policies are deliberately minimal and observable. Tests establish structural/behavioral properties of this reference implementation, not full scientific validation, causal attribution, or improved agent performance. Provider integration, a benchmark runner, richer values evaluation, and general language entailment remain outside this phase.
 
 ## Deferred hypotheses and attribution
 

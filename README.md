@@ -4,7 +4,7 @@ The Synthetic Consciousness Framework (SCF) is an open research framework invest
 
 The proposed mechanisms include **persistent self-modeling, metacognition, epistemic monitoring, intentionality, memory continuity, consequence modeling, and recursive self-correction**. SCF treats these as operational research targets whose contributions must be defined, tested, and compared with appropriate baselines.
 
-The **Conscious Agent Framework Harness (CAFH)** is the planned future reference implementation for studying these mechanisms. This repository currently establishes the research foundation; it does not contain a working harness or experimental results.
+The **Conscious Agent Framework Harness (CAFH)** is the reference implementation for studying these mechanisms. The repository includes the research foundation, Minimum Conscious Harness specification, and a deterministic Python runtime with a mock adapter. It contains no real-model experiments or benchmark results.
 
 SCF and CAFH are **model-agnostic, project-agnostic, work-agnostic, and industry-agnostic**. Future provider integrations and domain-specific applications belong in adapters and evaluation cases rather than in the core framework.
 
@@ -34,6 +34,24 @@ Braga's independent exploration of consciousness helped inspire selected researc
 
 ## Current status
 
-This first increment contains documentation only. Mechanism specifications, conscious.md, implementation, and experiments are future work. No performance improvement or scientific validation is claimed.
+Phase 3 implements the ordered [Minimum Conscious Harness protocol](scf/conscious.md) against the unchanged [state schema](schemas/conscious_state.schema.json). Inspectable stages, separate model/action interfaces, conservative epistemic checks, bounded reflection, and versioned in-process memory are included. No performance improvement or scientific validation is claimed.
+
+## Run the reference runtime
+
+From a checkout with Python 3.11 or newer:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e '.[test]'
+python -m pytest -q
+python -m examples.minimal_agent
+```
+
+On Windows, activate with `.venv\Scripts\activate`. No API keys or provider SDKs are used. After installation, runtime execution makes no network requests. The example prints structured events for two synthetic cycles: a mismatched prediction causes an explicit revision; the next cycle retrieves the observation from memory. This is a deterministic demonstration, not a benchmark or evidence of consciousness.
+
+Each event includes its type, sequence, run ID, cycle, stage, record references, and data. The Python trace API additionally exposes a copy-isolated schema-validated snapshot at every event. See [runtime architecture and limits](docs/architecture.md).
+
+AI-assisted drafting and engineering support for this implementation was provided through ChatGPT/Codex under Fabio Vinelli Lopes's instructions. The existing authorship convention and epistemic boundaries apply.
 
 A license has not yet been selected. The proprietary-rights agreement is not published in this repository.
