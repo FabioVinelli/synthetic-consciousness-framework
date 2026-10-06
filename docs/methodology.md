@@ -12,6 +12,9 @@ Status: prospective research design. No experimental results are claimed.
 
 B0 is a descriptive reference for the base model. For tasks that require interactive actions, B0 can propose actions but cannot be credited with unexecuted success; report that capability difference. **C1 versus B1 is the primary resource-matched causal comparison.** B0 differences alone cannot isolate the harness effect.
 
+![Comparison of B0 base prompt, B1 agent loop, and C1 harness under the same model, task, and budget](figures/scf-plate-05-compare.jpg)
+
+
 B1 has ordinary planning, tool use, and an equivalent storage budget; it does not receive the MCH-specific self-model and reflective-state structure. Freeze the conventional baseline before observing confirmatory results and allow comparable development effort.
 
 ## Resource matching

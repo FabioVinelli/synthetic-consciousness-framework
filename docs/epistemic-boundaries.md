@@ -2,6 +2,9 @@
 
 SCF **does not assume current AI is conscious**. It studies whether defined computational mechanisms improve observable agent behavior. A positive result would support a bounded functional claim, not a conclusion that the agent has subjective experience.
 
+![The research question separates a recordable function from experience, which remains unknown](figures/scf-plate-01-question.jpg)
+
+
 ## Working distinctions
 
 These definitions establish repository usage. They do not claim to resolve all scientific or philosophical disagreements about the terms.

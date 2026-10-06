@@ -14,6 +14,9 @@ The agent MUST maintain a self/world distinction: capabilities, limitations, com
 
 Every epistemic record MUST declare one primary information class. Composite statements SHOULD be split into records and linked by provenance.
 
+![Eight record classes: observed, reported, remembered, inferred, hypothesized, imagined, intended, and unknown](../docs/figures/scf-plate-04-classes.jpg)
+
+
 | Class | Operational meaning | Admission rule |
 | --- | --- | --- |
 | observed | A measurement or event available through a recorded interface | Cite the observation; scope the claim to what the interface actually measured |
@@ -36,6 +39,9 @@ INPUT → CONTEXT → MEMORY → WORLD MODEL → SELF MODEL → ATTENTION → IN
 ```
 
 The cycle is ordered. A blocked action still produces an action disposition and an observation of the block, rather than an invented execution outcome.
+
+![Ordered harness cycle of fifteen stages, returning to input](../docs/figures/scf-plate-03-cycle.jpg)
+
 
 | Stage | Required operation | State or audit output |
 | --- | --- | --- |

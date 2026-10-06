@@ -35,6 +35,9 @@ All policies choose the lexicographically first candidate, abstain when missing,
 
 ## Ablations and dependencies
 
+![Ablation chart: full harness, one mechanism removed at a time, with monitor, consequence, and intent held out](../docs/figures/scf-plate-06-ablate.jpg)
+
+
 | Condition | Actual disabled behavior | Retained dependencies |
 |---|---|---|
 | C1-full | None | Approved runtime defaults |

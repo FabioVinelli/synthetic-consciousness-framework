@@ -4,6 +4,9 @@ The Synthetic Consciousness Framework (SCF) is an open research framework invest
 
 The proposed mechanisms include **persistent self-modeling, metacognition, epistemic monitoring, intentionality, memory continuity, consequence modeling, and recursive self-correction**. SCF treats these as operational research targets whose contributions must be defined, tested, and compared with appropriate baselines.
 
+![Seven operational research targets: self-model, metacognition, monitor, intent, memory, consequence, and revision](docs/figures/scf-plate-02-mechanisms.jpg)
+
+
 The **Conscious Agent Framework Harness (CAFH)** is the reference implementation for studying these mechanisms. The repository includes the research foundation, Minimum Conscious Harness specification, and a deterministic Python runtime with a mock adapter. It contains no real-model experiments or benchmark results.
 
 SCF and CAFH are **model-agnostic, project-agnostic, work-agnostic, and industry-agnostic**. Future provider integrations and domain-specific applications belong in adapters and evaluation cases rather than in the core framework.
@@ -49,6 +52,9 @@ python -m examples.minimal_agent
 ```
 
 On Windows, activate with `.venv\Scripts\activate`. No API keys or provider SDKs are used. After installation, runtime execution makes no network requests. The example prints structured events for two synthetic cycles: a mismatched prediction causes an explicit revision; the next cycle retrieves the observation from memory. This is a deterministic demonstration, not a benchmark or evidence of consciousness.
+
+![Two mock cycles: a prediction mismatch forces a revision, then the next cycle recalls the observation](docs/figures/scf-plate-07-trace.jpg)
+
 
 Each event includes its type, sequence, run ID, cycle, stage, record references, and data. The Python trace API additionally exposes a copy-isolated schema-validated snapshot at every event. See [runtime architecture and limits](docs/architecture.md).
 
